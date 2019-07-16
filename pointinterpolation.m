@@ -1,0 +1,267 @@
+function [out, plot_data]=pointinterpolation(X,Y,n,flag,mantissa)
+syms x;
+out=x-x;
+h=X(2)-X(1);
+check=1;
+i=2;
+while(i<n)
+   if((X(i+1)-X(i))~=h)
+       check=0;
+   end
+   i=i+1;
+end
+if(check==0&&~(flag==0||flag==1))
+    disp('error');
+else
+switch flag
+    case 0
+        i=1;
+        while(i<=n)
+            g=x/x;
+            j=1;
+            while(j<=n)
+      if(j==i)
+          j=j+1;
+      else
+          g=g*(x-X(j));
+          j=j+1;
+      end
+            end
+            j=1;
+            while(j<=n)
+          if(j==i)
+          j=j+1;
+          else
+          g=g/(X(i)-X(j));
+          j=j+1;
+          end
+            end
+            out=out+Y(i)*g;
+            i=i+1;
+        end
+    case 1
+        i=1;
+        coeffs=Y;
+        while(i<=n)
+         g=x/x;
+         j=1;
+         while(j<i)
+             g=g*(x-X(j));
+             j=j+1;
+         end
+         out=out+coeffs(i)*g;
+         j=i+1;
+         while(j<=n)
+             coeffs(j)=(Y(j)-Y(j-1))/(X(j)-X(j-i));
+             j=j+1;
+         end
+         j=i+1;
+         while(j<=n)
+             Y(j)=coeffs(j);
+             j=j+1;
+         end
+         i=i+1;
+        end
+    case 2
+        i=1;
+        r=(x-X(1))/h;
+        coeffs=Y;aux=Y;
+        while(i<n+1)
+        coeffs(i)=aux(1);
+        j=0;
+        g=1;
+        while(j<i-1)
+            g=g*(r-j);
+        j=j+1;
+        end
+        out=out+coeffs(i)*g/factorial(i-1);
+        j=1;
+        while(j<n+1-i)
+        aux(j)=aux(j+1)-aux(j);
+        j=j+1;
+        end
+        i=i+1;
+        end
+    case 3
+        i=1;
+        r=(x-X(n))/h;
+        coeffs=Y;aux=Y;
+        coeffs=flipud(coeffs);
+        aux=flipud(aux);
+        while(i<n+1)
+        coeffs(i)=aux(1);
+        j=0;
+        g=1;
+        while(j<i-1)
+        g=g*(r+j);
+        j=j+1;
+        end
+        out=out+coeffs(i)*g/factorial(i-1);
+        j=1;
+        while(j<n+1-i)
+        aux(j)=aux(j)-aux(j+1);
+        j=j+1;
+        end
+        i=i+1;
+        end
+    case 4
+       i=1;
+       coeffs=Y;aux=Y;
+          if(mod(n,2)==0)
+      r=(x-X(n/2+1))/h;
+     while(i<n+1)
+          if(mod(i,2)==1)
+      coeffs(i)=aux((n-i+1)/2+1);
+          end
+          if(mod(i,2)==0)
+       coeffs(i) =aux(ceil((n-i+1)/2));
+          end
+        j=0;  
+        g=1;
+        k=1;
+          while(j<i-1)
+          if(j==0)
+              g=g*r;
+          end
+          if(j>0&&mod(j,2)==1)
+           g=g*(r+k);  
+          end
+          if(j>0&&mod(j,2)==0)
+          g=g*(r-k);
+          k=k+1;
+          end
+          j=j+1;
+          end
+          out=out+coeffs(i)*g/factorial(i-1);
+          j=1;
+        while(j<n)
+        aux(j)=aux(j+1)-aux(j);
+        j=j+1;
+        end
+        i=i+1;
+      end     
+          end
+       if(mod(n,2)==1)
+      r=(x-X(ceil(n/2)))/h;
+      while(i<n+1)
+          if(mod(i,2)==1)
+      coeffs(i)=aux(ceil((n-i+1)/2));
+          end
+          if(mod(i,2)==0)
+       coeffs(i) =aux((n-i+1)/2+1);
+          end
+        j=0;  
+        g=1;
+        k=1;
+          while(j<i-1)
+          if(j==0)
+              g=g*r;
+          end
+          if(j>0&&mod(j,2)==1)
+           g=g*(r-k);  
+          end
+          if(j>0&&mod(j,2)==0)
+          g=g*(r+k);
+          k=k+1;
+          end
+          j=j+1;
+          end
+          out=out+coeffs(i)*g/factorial(i-1);
+          j=1;
+        while(j<n)
+        aux(j)=aux(j+1)-aux(j);
+        j=j+1;
+        end
+        i=i+1;
+      end
+      end
+      case 5
+      i=1;
+      coeffs=Y;aux=Y;
+      if(mod(n,2)==0)
+      r=(x-X(n/2))/h;
+     while(i<n+1)
+          if(mod(i,2)==1)
+      coeffs(i)=aux((n-i+1)/2);
+          end
+          if(mod(i,2)==0)
+       coeffs(i) =aux(ceil((n-i+1)/2));
+          end
+        j=0;  
+        g=1;
+        k=1;
+          while(j<i-1)
+          if(j==0)
+              g=g*r;
+          end
+          if(j>0&&mod(j,2)==1)
+           g=g*(r-k);  
+          end
+          if(j>0&&mod(j,2)==0)
+          g=g*(r+k);
+          k=k+1;
+          end
+          j=j+1;
+          end
+          out=out+coeffs(i)*g/factorial(i-1);
+          j=1;
+        while(j<n)
+        aux(j)=aux(j+1)-aux(j);
+        j=j+1;
+        end
+        i=i+1;
+      end     
+      end
+      if(mod(n,2)==1)
+      r=(x-X(ceil(n/2)))/h;
+      while(i<n+1)
+          if(mod(i,2)==1)
+      coeffs(i)=aux(ceil((n-i+1)/2));
+          end
+          if(mod(i,2)==0)
+       coeffs(i) =aux((n-i+1)/2);
+          end
+        j=0;  
+        g=1;
+        k=1;
+          while(j<i-1)
+          if(j==0)
+              g=g*r;
+          end
+          if(j>0&&mod(j,2)==1)
+           g=g*(r+k);  
+          end
+          if(j>0&&mod(j,2)==0)
+          g=g*(r-k);
+          k=k+1;
+          end
+          j=j+1;
+          end
+          out=out+coeffs(i)*g/factorial(i-1);
+          j=1;
+        while(j<n)
+        aux(j)=aux(j+1)-aux(j);
+        j=j+1;
+        end
+        i=i+1;
+      end
+      end 
+end
+l=ceil((X(n)-X(1))/0.01);
+xs=zeros(1,l);
+xs(1)=X(1);
+i=2;
+while(i<=length(xs))
+    xs(i)=xs(i-1)+0.01;
+    i=i+1;
+end
+out=simplify(out);
+out=vpa(out,mantissa);
+ys=subs(out,x,xs);
+plot_data.plt{1} = [xs ys];
+plot_data.type{1} = 'p';
+plot_data.legend{1} = 'Interpolated polynomial';
+plot_data.plt{2} = [X Y];
+plot_data.type{2} = 's';
+plot_data.legend{2} = 'Actual points';
+end

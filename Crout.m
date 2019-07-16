@@ -1,0 +1,81 @@
+function [out,summ]=Crout(A,B)
+DIM=size(A);
+n=DIM(1);
+s=1;
+summ=zeros(10^5,n+1);
+AUX=zeros(n,n+1);
+AUX(:,1:end-1)=A;
+AUX(:,end)=B;
+AUX=MATRIXCORRECTOR(AUX);
+summ(s:s+n-1,:)=AUX;
+s=s+n;
+A=AUX(:,1:end-1);
+B=AUX(:,end);
+L=A;
+U=eye(n);
+i=n-1;
+while(i>=1)
+    j=n;
+    while(j>=i+1)
+        U(i,j)=L(i,j)/L(j,j);
+        L(i,:)=L(i,:)-(L(i,j)/L(j,j))*L(j,:);
+        j=j-1;
+    end
+    i=i-1;
+end
+summ(s:s+n-1,1:end-1)=L;
+s=s+n;
+summ(s:s+n-1,1:end-1)=U;
+s=s+n;
+AUX=zeros(n,n+1);
+AUX(:,1:end-1)=U;
+AUX(:,end)=B;
+summ(s:s+n-1,:)=AUX;
+s=s+n;
+i=n-1;
+while(i>=1)
+    j=n;
+    while(j>=i+1)
+        AUX(i,:)=AUX(i,:)-(AUX(i,j)/AUX(j,j))*AUX(j,:);
+        j=j-1;
+    end
+    i=i-1;
+end
+summ(s:s+n-1,:)=AUX;
+s=s+n;
+i=1;
+while(i<=n)
+    AUX(i,n+1)=AUX(i,n+1)/AUX(i,i);
+    AUX(i,i)=1;
+    i=i+1;
+end
+summ(s:s+n-1,:)=AUX;
+s=s+n;
+Y=AUX(:,n+1);
+summ(s:s+n-1,:)=AUX;
+s=s+n;
+AUX(:,1:end-1)=L;
+AUX(:,end)=Y;
+summ(s:s+n-1,:)=AUX;
+s=s+n;
+i=2;
+while(i<=n)
+    j=1;
+    while(j<=i-1)
+       AUX(i,:)=AUX(i,:)-(AUX(i,j)/AUX(j,j))*AUX(j,:);
+       j=j+1;
+    end
+    i=i+1;
+end
+summ(s:s+n-1,:)=AUX;
+s=s+n;
+i=1;
+while(i<=n)
+    AUX(i,n+1)=AUX(i,n+1)/AUX(i,i);
+    AUX(i,i)=1;
+    i=i+1;
+end
+summ(s:s+n-1,:)=AUX;
+s=s+n-1;
+summ=summ(1:s,:);
+out=AUX(:,n+1);

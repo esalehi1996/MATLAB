@@ -1,0 +1,33 @@
+function out=Gauss(A,B)
+DIM=size(A);
+n=DIM(1);
+AUX=zeros(n,n+1);
+AUX(:,1:end-1)=A;
+AUX(:,end)=B;
+AUX=MATRIXCORRECTOR(AUX);
+i=2;
+while(i<=n)
+    j=1;
+    while(j<=i-1)
+        AUX(i,:)=AUX(i,:)-(AUX(i,j)/AUX(j,j))*AUX(j,:);
+        j=j+1;
+    end
+    i=i+1;
+end
+i=n-1;
+while(i>=1)
+    j=n;
+    while(j>=i+1)
+       AUX(i,:)=AUX(i,:)-(AUX(i,j)/AUX(j,j))*AUX(j,:);
+       j=j-1;
+    end
+    i=i-1;
+end
+i=1;
+while(i<=n)
+    AUX(i,n+1)=AUX(i,n+1)/AUX(i,i);
+    AUX(i,i)=1;
+    i=i+1;
+end
+out=AUX(:,n+1);
+    
